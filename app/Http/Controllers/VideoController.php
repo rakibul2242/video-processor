@@ -4,12 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ConvertToHls;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class VideoController extends Controller
 {
     public function showUploadForm()
     {
-        $videos = \Storage::disk('public')->files('videos'); // 'videos' folder in storage/app/public
+        $allVideos = \Storage::disk('public')->files('videos'); // মূল আপলোড ফাইল
+        $videos = [];
+
+        foreach ($allVideos as $video) {
+            $filename = pathinfo($video, PATHINFO_FILENAME);
+            $hlsPath = "videos/hls/{$filename}/playlist.m3u8";
+
+            if (\Storage::disk('public')->exists($hlsPath)) {
+                $videos[] = $hlsPath; // HLS playlist only
+            }
+        }
+
         return view('upload-video', compact('videos'));
     }
 
@@ -20,8 +32,10 @@ class VideoController extends Controller
         ]);
 
         $file = $request->file('video');
-        $fileName = $file->getClientOriginalName();
-        $path = $file->storeAs('videos', $fileName, 'public');
+        $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $extension = $file->getClientOriginalExtension();
+        $safeName = Str::slug($originalName) . '-' . time() . '.' . $extension;
+        $path = $file->storeAs('videos', $safeName, 'public');
 
         $fullPath = storage_path('app/public/' . $path);
 

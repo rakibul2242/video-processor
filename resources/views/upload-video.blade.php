@@ -3,14 +3,12 @@
         <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-7xl mx-auto mt-10">
             <h1 class="text-2xl font-bold mb-4 text-center">🎬 Upload Video</h1>
 
-            {{-- Success message --}}
             @if (session('success'))
                 <div class="bg-green-100 text-green-800 p-3 rounded mb-4">
                     {{ session('success') }}
                 </div>
             @endif
 
-            {{-- Upload Form --}}
             <form action="/upload-video" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 <div>
@@ -28,7 +26,6 @@
                 </button>
             </form>
 
-            {{-- Video Player --}}
             <div class="mt-10">
                 <h2 class="text-lg font-semibold mb-2">▶️ Video Player</h2>
                 <video id="videoPlayer" class="video-js vjs-big-play-centered w-full rounded-xl shadow-lg" controls
@@ -37,17 +34,18 @@
                 </video>
             </div>
 
-            {{-- Video List --}}
             <div class="mt-10">
                 <h2 class="text-lg font-semibold mb-2">🎥 Uploaded Videos</h2>
-                <ul class="flex  flex-wrap gap-3">
+                <ul class="flex flex-wrap gap-3">
                     @foreach ($videos as $video)
+                        @php
+                            $path = asset('storage/' . $video); // full URL of playlist.m3u8
+                            $filename = basename(dirname($video)); // HLS folder name
+                        @endphp
                         <li>
-                            <button onclick="playVideo('{{ asset('storage/' . $video) }}')"
-                                class="w-full text-left bg-gray-100 hover:bg-gray-200 p-3 rounded-lg transition">
-                                <div class="font-medium truncate">
-                                    {{ basename($video) }}
-                                </div>
+                            <button onclick="playHls('{{ $path }}')"
+                                class="text-left bg-gray-100 hover:bg-gray-200 p-3 rounded-lg transition">
+                                {{ $filename }}
                             </button>
                         </li>
                     @endforeach
@@ -55,19 +53,21 @@
             </div>
         </div>
 
-        {{-- Video.js CDN --}}
         <link href="https://vjs.zencdn.net/8.16.1/video-js.css" rel="stylesheet" />
         <script src="https://vjs.zencdn.net/8.16.1/video.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/videojs-http-streaming@3.0.0/dist/videojs-http-streaming.min.js"></script>
 
         <script>
             const player = videojs('videoPlayer');
 
-            function playVideo(url) {
-                // Detect if HLS (.m3u8)
-                const isHls = url.endsWith('.m3u8');
-                const type = isHls ? 'application/x-mpegURL' : 'video/mp4';
+            function playHls(url) {
+                player.src({
+                    src: url,
+                    type: 'application/x-mpegURL'
+                });
 
-                player.src({ src: url, type });
+                player.load();
                 player.play();
             }
         </script>
