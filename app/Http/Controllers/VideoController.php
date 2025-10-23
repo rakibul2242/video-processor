@@ -10,7 +10,7 @@ class VideoController extends Controller
 {
     public function showUploadForm()
     {
-        $allVideos = \Storage::disk('public')->files('videos'); // মূল আপলোড ফাইল
+        $allVideos = \Storage::disk('public')->files('videos');
         $videos = [];
 
         foreach ($allVideos as $video) {
@@ -18,7 +18,7 @@ class VideoController extends Controller
             $hlsPath = "videos/hls/{$filename}/playlist.m3u8";
 
             if (\Storage::disk('public')->exists($hlsPath)) {
-                $videos[] = $hlsPath; // HLS playlist only
+                $videos[] = $hlsPath;
             }
         }
 
@@ -28,7 +28,7 @@ class VideoController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-            'video' => 'required|file|mimes:mp4,mov,ogg,qt,mkv,avi,wmv|max:1024000',
+            'video' => 'required|file|mimes:mp4|max:102400',
         ]);
 
         $file = $request->file('video');
