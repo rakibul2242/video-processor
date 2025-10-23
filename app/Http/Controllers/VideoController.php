@@ -22,7 +22,7 @@ class VideoController extends Controller
             }
         }
 
-        return view('upload-video', compact('videos'));
+        return view('dashboard', compact('videos'));
     }
 
     public function upload(Request $request)

@@ -9,12 +9,12 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+// Route::view('dashboard', 'dashboard')
+//     ->middleware(['auth', 'verified'])
+//     ->name('dashboard');
 
-Route::get('/upload-video', [VideoController::class, 'showUploadForm']);
-Route::post('/upload-video', [VideoController::class, 'upload']);
+Route::get('/dashboard', [VideoController::class, 'showUploadForm'])->name('dashboard');
+Route::post('/dashboard', [VideoController::class, 'upload']);
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
