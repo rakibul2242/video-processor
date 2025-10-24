@@ -1,29 +1,18 @@
 <?php
 
-use App\Http\Controllers\ChunkVideoController;
-use App\Http\Controllers\VideoController;
-use App\Livewire\VideoProcess;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// })->name('home');
+Route::get('/', function () {
+    return view('welcome');
+})->name('home');
 
-// Route::view('dashboard', 'dashboard')
-//     ->middleware(['auth', 'verified'])
-//     ->name('dashboard');
+Route::view('video-process', 'video-process')->name('video-process')->middleware(['auth', 'verified']);
 
-Route::get('test', VideoProcess::class)->withoutMiddleware(['auth', 'verified'])->name('test');
-
-Route::get('/', [ChunkVideoController::class, 'showUploadForm']);
-Route::post('/', [ChunkVideoController::class, 'chunkUpload'])->name('video.upload');
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [VideoController::class, 'showUploadForm'])->name('dashboard');
-    Route::post('/dashboard', [VideoController::class, 'chunkUpload']);
-});
+Route::view('dashboard', 'dashboard')
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');

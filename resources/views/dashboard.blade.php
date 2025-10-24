@@ -1,73 +1,18 @@
-<x-layouts.app.header :title="'Upload Video'">
-    <flux:main>
-        <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-7xl mx-auto mt-10">
-            <h1 class="text-2xl font-bold mb-4 text-center">🎬 Upload Video</h1>
-
-            {{-- Success message --}}
-            <div id="uploadSuccess" class="hidden bg-green-100 text-green-800 p-3 rounded mb-4"></div>
-
-            {{-- Upload Form --}}
-            <form id="uploadForm" enctype="multipart/form-data" class="space-y-4">
-                @csrf
-                <div>
-                    <label class="block mb-2 font-medium">Choose a video file:</label>
-                    <input type="file" name="video" accept="video/*" required
-                        class="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500" />
-                </div>
-
-                @error('video')
-                    <p class="text-red-500 text-sm">{{ $message }}</p>
-                @enderror
-
-                <button type="submit" id="uploadBtn"
-                    class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition">
-                    Upload Video
-                </button>
-            </form>
-
-            {{-- Player --}}
-            <div class="mt-10">
-                <h2 class="text-lg font-semibold mb-2">▶️ Video Player</h2>
-                <video id="videoPlayer" class="video-js vjs-big-play-centered w-full rounded-xl shadow-lg" controls
-                    preload="auto" poster="https://vjs.zencdn.net/v/oceans.png" data-setup='{}'>
-                    <source id="videoSource" src="" type="video/mp4" />
-                </video>
+<x-layouts.app :title="__('Dashboard')">
+    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
+        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
             </div>
-
-            {{-- Uploaded videos --}}
-            <div class="mt-10">
-                <h2 class="text-lg font-semibold mb-2">🎥 Uploaded Videos</h2>
-                <ul id="videoList" class="flex flex-wrap gap-3">
-                    @foreach ($videos as $video)
-                        @php
-                            $path = asset('storage/' . $video);
-                            $filename = basename(dirname($video));
-                        @endphp
-                        <li>
-                            <button onclick="playHls('{{ $path }}')"
-                                class="text-left bg-gray-100 hover:bg-gray-200 p-3 rounded-lg transition">
-                                {{ $filename }}
-                            </button>
-                        </li>
-                    @endforeach
-                </ul>
+            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+            </div>
+            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
             </div>
         </div>
-
-        {{-- Video.js --}}
-        <link href="https://vjs.zencdn.net/8.16.1/video-js.css" rel="stylesheet" />
-        <script src="https://vjs.zencdn.net/8.16.1/video.min.js"></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/videojs-http-streaming@3.0.0/dist/videojs-http-streaming.min.js"></script>
-
-        <script>
-            const player = videojs('videoPlayer');
-
-            function playHls(url) {
-                player.src({ src: url, type: 'application/x-mpegURL' });
-                player.load();
-                player.play();
-            }
-        </script>
-    </flux:main>
-</x-layouts.app.header>
+        <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+            <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+        </div>
+    </div>
+</x-layouts.app>

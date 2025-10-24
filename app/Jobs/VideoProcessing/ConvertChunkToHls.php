@@ -2,6 +2,7 @@
 
 namespace App\Jobs\VideoProcessing;
 
+use App\Models\Video;
 use FFMpeg\Format\Video\X264;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -13,14 +14,15 @@ use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 class ConvertChunkToHls implements ShouldQueue
 {
     use Queueable, Dispatchable, InteractsWithQueue, SerializesModels;
-    public $chunkFile;
+    public $folderName, $chunkFileName;
 
     /**
      * Create a new job instance.
      */
-    public function __construct($chunkFile)
+    public function __construct(string $folderName, string $chunkFileName)
     {
-        $this->chunkFile = $chunkFile;
+        $this->folderName = $folderName;
+        $this->chunkFileName = $chunkFileName;
     }
 
     /**
@@ -28,25 +30,39 @@ class ConvertChunkToHls implements ShouldQueue
      */
     public function handle(): void
     {
-        $chunkFilePath = $this->chunkFile;
-        $filename = pathinfo($chunkFilePath, PATHINFO_FILENAME);
-        $parentDir = pathinfo($chunkFilePath, PATHINFO_DIRNAME);
-        $mainFilename = basename(dirname($parentDir));
-        $outputDir = "chunks/{$mainFilename}/hls/";
+        try {
+            $chunkName = pathinfo($this->chunkFileName, PATHINFO_FILENAME);
+            $outputDir = "chunks/{$this->folderName}/hls/";
+            $fullOutputDir = storage_path("app/public/{$outputDir}");
 
-        \Log::info('ConvertChunkToHls', [
-            'chunkFile' => $chunkFilePath,
-            'chunkFilename' => $filename,
-            'mainFilename' => $mainFilename,
-            'outputDir' => $outputDir,
-        ]);
+            if (!file_exists($fullOutputDir)) {
+                mkdir($fullOutputDir, 0777, true);
+            }
 
+            \Log::info('Converting chunk to HLS', [
+                'folder' => $this->folderName,
+                'chunk' => $this->chunkFileName,
+                'outputDir' => $outputDir
+            ]);
 
-        FFMpeg::fromDisk('public')
-            ->open("chunks/{$mainFilename}/split/{$filename}.mp4")
-            ->exportForHLS()
-            ->toDisk('public')
-            ->addFormat((new X264())->setKiloBitrate(1000))
-            ->save("{$outputDir}{$filename}.m3u8");
+            FFMpeg::fromDisk('public')
+                ->open("chunks/{$this->folderName}/split/{$this->chunkFileName}")
+                ->exportForHLS()
+                ->toDisk('public')
+                ->addFormat((new X264())->setKiloBitrate(1000))
+                ->save("{$outputDir}{$chunkName}.m3u8");
+
+            // Video::create([
+            //     'hls_path' => "{$outputDir}{$chunkName}.m3u8"
+            // ]);
+
+        } catch (\Exception $e) {
+            \Log::error("ConvertChunkToHls failed", [
+                'error' => $e->getMessage(),
+                'folder' => $this->folderName,
+                'chunk' => $this->chunkFileName
+            ]);
+            throw $e;
+        }
     }
 }
