@@ -10,23 +10,19 @@
     <form wire:submit.prevent="uploadVideo" method="POST" enctype="multipart/form-data" class="space-y-4">
         @csrf
 
-        <!-- File input -->
         <div>
             <label class="block mb-2 font-medium">Choose a video file:</label>
             <input type="file" name="video" wire:model="video" accept="video/*" required
                 class="w-full border rounded p-2 focus:ring-2 focus:ring-blue-500" />
         </div>
 
-        <!-- Validation errors -->
         @error('video')
             <p class="text-red-500 text-sm">{{ $message }}</p>
         @enderror
 
-        <!-- Upload button -->
         <button type="submit"
             class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition flex items-center justify-center"
             wire:loading.attr="disabled" wire:target="video,uploadVideo">
-            <!-- Spinner: shows during file upload OR action -->
             <svg wire:loading wire:target="video,uploadVideo" class="animate-spin h-5 w-5 mr-2 text-white"
                 xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
