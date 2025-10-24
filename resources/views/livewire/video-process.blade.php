@@ -48,24 +48,24 @@
 
     <div class="mt-10">
         <h2 class="text-lg font-semibold mb-2">🎥 Processed Videos</h2>
-        <ul class="flex flex-col gap-2">
+        <ul class="flex flex-col gap-2 overflow-auto max-h-80">
             @forelse ($videos as $video)
                 <li class="p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 shadow-sm"
                     onclick="playHls('{{ asset('storage/' . $video->hls_path) }}')">
                     {{ asset('storage/' . $video->hls_path) }}
                     <!-- <div class="flex items-center space-x-3">
-                                <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                                    <span class="text-blue-600">🎞</span>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-gray-900 truncate">
-                                        {{ basename(dirname($video->hls_path)) }}
-                                    </p>
-                                    <p class="text-xs text-gray-500 truncate">
-                                        HLS Stream
-                                    </p>
-                                </div>
-                            </div> -->
+                                            <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                                <span class="text-blue-600">🎞</span>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-medium text-gray-900 truncate">
+                                                    {{ basename(dirname($video->hls_path)) }}
+                                                </p>
+                                                <p class="text-xs text-gray-500 truncate">
+                                                    HLS Stream
+                                                </p>
+                                            </div>
+                                        </div> -->
                     {{ basename(dirname($video->hls_path)) }}
                 </li>
             @empty

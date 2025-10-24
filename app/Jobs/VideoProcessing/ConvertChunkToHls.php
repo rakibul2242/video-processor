@@ -51,11 +51,6 @@ class ConvertChunkToHls implements ShouldQueue
                 ->toDisk('public')
                 ->addFormat((new X264())->setKiloBitrate(1000))
                 ->save("{$outputDir}{$chunkName}.m3u8");
-
-            // Video::create([
-            //     'hls_path' => "{$outputDir}{$chunkName}.m3u8"
-            // ]);
-
         } catch (\Exception $e) {
             \Log::error("ConvertChunkToHls failed", [
                 'error' => $e->getMessage(),
