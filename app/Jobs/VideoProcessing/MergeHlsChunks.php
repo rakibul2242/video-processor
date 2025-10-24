@@ -39,7 +39,7 @@ class MergeHlsChunks implements ShouldQueue
             natsort($files);
             $files = array_values($files);
 
-            $finalMediaPlaylist = "#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-TARGETDURATION:11\n#EXT-X-PLAYLIST-TYPE:VOD\n";
+            $finalMediaPlaylist = "#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-TARGETDURATION:101\n#EXT-X-PLAYLIST-TYPE:VOD\n";
 
             $isFirstChunk = true;
 
@@ -48,7 +48,6 @@ class MergeHlsChunks implements ShouldQueue
                     $chunkContent = file_get_contents($file);
 
                     $lines = explode("\n", $chunkContent);
-                    $segmentLines = [];
 
                     foreach ($lines as $line) {
                         if (

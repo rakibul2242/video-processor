@@ -21,7 +21,6 @@ class VideoProcess extends Component
 
     public function mount()
     {
-
         $this->videos = Video::latest()->get();
     }
 

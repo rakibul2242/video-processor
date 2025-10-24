@@ -35,7 +35,7 @@ class SplitVideoIntoChunks implements ShouldQueue
                 mkdir($chunkDir, 0777, true);
             }
 
-            $seconds = 10; // per chunk in seconds
+            $seconds = 100; // per chunk video in seconds
             $cmd = sprintf(
                 'ffmpeg -i "%s" -c copy -map 0 -segment_time %d -f segment -reset_timestamps 1 "%s/chunk_%%03d.mp4" 2>&1',
                 $inputPath,
